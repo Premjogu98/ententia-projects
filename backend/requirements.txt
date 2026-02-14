@@ -1,0 +1,11 @@
+fastapi==0.85.0
+fastapi-utils==0.2.1
+uvicorn[standard]==0.18.3
+python-dotenv
+python-jose[cryptography]
+faker
+mongoengine
+passlib[bcrypt]
+pydantic
+pydantic[email]
+requests

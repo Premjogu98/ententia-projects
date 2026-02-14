@@ -1,0 +1,483 @@
+/* =========================================
+   Ententia - Core Styles & Semantic CSS
+   ========================================= */
+
+:root {
+  /* Colors */
+  --primary: #87CEEB;
+  /* Sky Blue */
+  --primary-hover: #0ea5e9;
+  --primary-foreground: #FFFFFF;
+  /* Text on primary */
+
+  --bg-body: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-input: #FFFFFF;
+
+  --text-main: #0F172A;
+  --text-muted: #64748B;
+
+  --border-color: #E2E8F0;
+
+  /* Status Colors */
+  --success-bg: #DCFCE7;
+  --success-text: #166534;
+  --warning-bg: #FEF9C3;
+  --warning-text: #854D0E;
+  --info-bg: #E0F2FE;
+  --info-text: #075985;
+  --draft-bg: #F1F5F9;
+  --draft-text: #475569;
+
+  /* Dimensions & Spacing */
+  --radius: 0.5rem;
+  --header-height: 4rem;
+  --container-max: 1280px;
+}
+
+[data-theme='dark'] {
+  --bg-body: #0F172A;
+  --bg-card: #1E293B;
+  --bg-input: #0F172A;
+
+  --text-main: #F8FAFC;
+  --text-muted: #94A3B8;
+
+  --border-color: #334155;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+/* =========================================
+   Utility Classes (Custom Implementation)
+   ========================================= */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.gap-6 {
+  gap: 1.5rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+/* =========================================
+   Components
+   ========================================= */
+
+/* Use Semantic Class Names */
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #0F172A;
+  /* Dark text on Sky Blue for contrast */
+}
+
+.btn-dark {
+  background-color: #1F2937;
+  color: white;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.btn-icon {
+  padding: 0.4rem;
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+}
+
+.btn-icon:hover {
+  background-color: var(--border-color);
+  color: var(--primary);
+}
+
+/* --- Forms & Inputs --- */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 0.625rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  border-radius: var(--radius);
+  outline: none;
+  font-size: 0.875rem;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.2);
+}
+
+/* --- Cards --- */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* --- Modal --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background-color: var(--bg-card);
+  width: 100%;
+  max-width: 32rem;
+  /* approx 500px */
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  padding: 1.25rem;
+  background-color: var(--bg-body);
+  /* Subtle contrast */
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* --- Table & Pagination --- */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.data-table th {
+  background-color: var(--primary);
+  /* Sky Blue Header */
+  color: #0F172A;
+  text-align: left;
+  padding: 1rem;
+  font-weight: 600;
+}
+
+.data-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.data-table tr:hover {
+  background-color: rgba(135, 206, 235, 0.05);
+}
+
+
+/* --- Checkboxes --- */
+.btn-checkbox {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+}
+
+.btn-checkbox:hover {
+  background-color: rgba(135, 206, 235, 0.1);
+  color: var(--primary);
+}
+
+.btn-checkbox.active {
+  color: var(--primary);
+}
+
+/* --- Pagination (Pill Style) --- */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--bg-body);
+  padding: 0.25rem;
+  border-radius: 9999px;
+  /* Pill shape */
+  border: 1px solid var(--border-color);
+}
+
+.page-btn {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  /* Circle for numbers */
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: rgba(135, 206, 235, 0.2);
+  color: var(--text-main);
+}
+
+.page-btn.active {
+  background-color: var(--primary);
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(135, 206, 235, 0.4);
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.rows-per-page {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.rows-select {
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  font-size: 0.875rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.rows-select:focus {
+  border-color: var(--primary);
+}
+
+/* --- Navbar --- */
+.navbar {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.nav-content {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* --- Auth Pages --- */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.auth-register {
+  background: linear-gradient(135deg, #F0F9FF 0%, #BAE6FD 100%);
+}
+
+.auth-login {
+  background-color: #0F172A;
+  background-image: radial-gradient(#334155 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* Login specific override for card inside dark bg */
+.auth-login .card {
+  background-color: #1E293B;
+  border-color: #334155;
+  color: #FFFFFF;
+}
+
+.auth-login .form-label {
+  color: #CBD5E1;
+}
+
+.auth-login .form-input {
+  background-color: #0F172A;
+  border-color: #334155;
+  color: white;
+}
