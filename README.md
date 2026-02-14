@@ -46,7 +46,7 @@ The easiest way to run the application is using Docker Compose. This starts the 
 
 3.  **Access the App**:
     -   **Frontend**: [http://localhost:3000](http://localhost:3000)
-    -   **Backend API**: [http://localhost:8000/docs](http://localhost:8000/docs) (Swagger UI)
+    -   **Backend API**: [http://localhost:8000/api/v1/insights/docs](http://localhost:8000/api/v1/insights/docs) (Swagger UI)
 
 ---
 
@@ -81,7 +81,7 @@ npm run dev
 To quickly populate the database with insights (useful for testing pagination and performance), use the **Seed API**.
 This uses the **Faker** library to generate realistic titles, content, categories, and metadata.
 
-1.  Go to the **API Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs)
+1.  Go to the **API Documentation**: [http://localhost:8000/api/v1/insights/docs](http://localhost:8000/api/v1/insights/docs)
 2.  Find the `POST /api/v1/insights/seed` endpoint.
 3.  Click **Try it out**.
 4.  Enter the number of insights to generate (default: 5000).
