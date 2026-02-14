@@ -21,3 +21,5 @@ COPY --chown=ententia:ententia . .
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8000
+
+CMD ["gunicorn", "v1:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
