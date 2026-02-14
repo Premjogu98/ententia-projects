@@ -28,27 +28,27 @@ class Insight(Document):
             "status",
             "complexity",
             "tags",
-            "$title",  # Text index for search
-            "$content", # Text index for search
+            "tags",
+            # Combined Text Index
+            {'fields': ['$title', "$content"], 'default_language': 'english', 'weights': {'title': 10, 'content': 5}},
             
+            # Pagination & Sorting Optimization
             # Pagination & Sorting Optimization
             "-created_at",
             ("category", "-created_at"),
             ("status", "-created_at"),
             ("complexity", "-created_at"),
-            ("created_by", "-created_at")
-        ]
+            ("created_by", "-created_at"),
+        ],
     }
 
     title = StringField(required=True)
     content = StringField(required=True)
     tags = ListField(StringField())
-    
-    # New Fields
     category = StringField(default="General")
-    status = StringField(default="Draft") # Draft, Published, Archived
-    complexity = StringField(default="Medium") # Low, Medium, High
-    metadata = DictField(default={}) # Flexible key-value store
+    status = StringField(default="Draft")  # Draft, Published, Archived
+    complexity = StringField(default="Medium")  # Low, Medium, High
+    metadata = DictField(default={})  # Flexible key-value store
 
     created_at = DateTimeField(default=datetime.datetime.utcnow)
     updated_at = DateTimeField(default=datetime.datetime.utcnow)

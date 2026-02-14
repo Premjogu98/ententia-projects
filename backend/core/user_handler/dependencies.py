@@ -1,5 +1,7 @@
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+
 from core.user_handler.security_utils import security
 from v1.models import User
 
@@ -11,7 +13,7 @@ class AuthDependency:
     def get_current_user(
         self,
         credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
-    ) -> User:
+    ):
 
         if credentials.scheme.lower() != "bearer":
             raise HTTPException(status_code=401, detail="Invalid authentication scheme")

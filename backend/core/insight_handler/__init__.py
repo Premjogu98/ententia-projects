@@ -15,25 +15,29 @@ fake = Faker()
 
 
 class InsightHandler:
-    
-    def bulk_insert_insights(self, count: int = 5000) -> str:
-        # Retrieve a user to assign insights to (admin or first available)
+
+    def bulk_insert_insights(self, count: int = 5000):
         user = User.objects(email="admin@ententia.ai").first()
         if not user:
             user = User.objects.first()
-        
+
         if not user:
-            # If absolutely no user exists, create a temp one
             handler = UserHandler()
-            user = handler.register_new_user(f"seed_{random.randint(1000,9999)}@ententia.ai", "password")
+            user = handler.register_new_user(
+                f"seed_{random.randint(1000,9999)}@ententia.ai", "password"
+            )
 
         insights = []
-        categories = ["Generative AI", "Process Automation", "Governance", "Operations", "Finance"]
+        categories = [
+            "Generative AI",
+            "Process Automation",
+            "Governance",
+            "Operations",
+            "Finance",
+        ]
         statuses = ["Draft", "Published", "Archived", "Planned"]
         complexities = ["Low", "Medium", "High"]
 
-        # Batch insert optimization could be better with raw pymongo if needed, 
-        # but MongoEngine insert is fine for 5000.
         for _ in range(count):
             insights.append(
                 Insight(
@@ -44,70 +48,85 @@ class InsightHandler:
                     status=random.choice(statuses),
                     complexity=random.choice(complexities),
                     metadata={"generated": True, "batch": "bulk_seed"},
-                    created_by=user
+                    created_by=user,
                 )
             )
-        
-        if insights:
-            Insight.objects.insert(insights)
 
-        return f"{count} insights inserted successfully"
+        try:
+            if insights:
+                Insight.objects.insert(insights)
 
-    def create_new_insight(self, payload: InsightCreate, user: User) -> Insight:
-        insight = Insight(
-            title=payload.title,
-            content=payload.content,
-            tags=payload.tags,
-            category=payload.category,
-            status=payload.status,
-            complexity=payload.complexity,
-            metadata=payload.metadata,
-            created_by=user
-        )
-        insight.save()
-        console_logger.debug(f"Created insight: {insight.id}")
-        return insight
+            return f"{count} insights inserted successfully"
+        except Exception as e:
+            console_logger.error(f"Error seeding insights: {e}")
+            raise HTTPException(status_code=500, detail="Internal Server Error during seeding")
 
-    def fetch_insight_by_id(self, insight_id: str, user: User) -> Insight:
-        # Allow access to any insight
+    def create_new_insight(self, payload: InsightCreate, user: User):
+        try:
+            insight = Insight(
+                title=payload.title,
+                content=payload.content,
+                tags=payload.tags,
+                category=payload.category,
+                status=payload.status,
+                complexity=payload.complexity,
+                metadata=payload.metadata,
+                created_by=user,
+            )
+            insight.save()
+            console_logger.debug(f"Created insight: {insight.id}")
+            return insight
+        except Exception as e:
+            console_logger.error(f"Error creating insight: {e}")
+            raise HTTPException(status_code=500, detail="Internal Server Error during creation")
+
+    def fetch_insight_by_id(self, insight_id: str, user: User):
         insight = Insight.objects(id=insight_id).first()
         if not insight:
             raise HTTPException(status_code=404, detail="Not found")
         return insight
 
-    def modify_insight_details(self, insight_id: str, payload: InsightUpdate, user: User) -> Insight:
-        # Allow any user to modify any insight
+    def modify_insight_details(
+        self, insight_id: str, payload: InsightUpdate, user: User
+    ):
         insight = Insight.objects(id=insight_id).first()
 
         if not insight:
             raise HTTPException(status_code=404, detail="Not found")
 
-        if payload.title is not None:
-            insight.title = payload.title
-        if payload.content is not None:
-            insight.content = payload.content
-        if payload.tags is not None:
-            insight.tags = payload.tags
-        if payload.category is not None:
-            insight.category = payload.category
-        if payload.status is not None:
-            insight.status = payload.status
-        if payload.complexity is not None:
-            insight.complexity = payload.complexity
-        if payload.metadata is not None:
-            insight.metadata = payload.metadata
+        try:
+            if payload.title is not None:
+                insight.title = payload.title
+            if payload.content is not None:
+                insight.content = payload.content
+            if payload.tags is not None:
+                insight.tags = payload.tags
+            if payload.category is not None:
+                insight.category = payload.category
+            if payload.status is not None:
+                insight.status = payload.status
+            if payload.complexity is not None:
+                insight.complexity = payload.complexity
+            if payload.metadata is not None:
+                insight.metadata = payload.metadata
 
-        insight.save()
-        return insight
+            insight.save()
+            return insight
+        except Exception as e:
+            console_logger.error(f"Error modifying insight {insight_id}: {e}")
+            raise HTTPException(status_code=500, detail="Internal Server Error during update")
 
-    def remove_insight_record(self, insight_id: str, user: User) -> None:
-        # Allow any user to delete any insight
+    def remove_insight_record(self, insight_id: str, user: User):
         insight = Insight.objects(id=insight_id).first()
 
         if not insight:
             raise HTTPException(status_code=404, detail="Not found")
 
-        insight.delete()
+        try:
+            insight.delete()
+        except Exception as e:
+            console_logger.error(f"Error removing insight {insight_id}: {e}")
+            raise HTTPException(status_code=500, detail="Internal Server Error during deletion")
 
     def fetch_all_insights(
         self,
@@ -121,19 +140,18 @@ class InsightHandler:
         order: str = "desc",
         page: int = 1,
         size: int = 10,
-    ) -> Dict[str, Any]:
-        
+    ):
+
         if user.role == "super_admin":
             query = Insight.objects()
         else:
-            # Allow all users to see all insights per request
             query = Insight.objects()
 
-        # Search
         if search:
-            query = query.filter(Q(title__icontains=search) | Q(content__icontains=search))
+            query = query.filter(
+                Q(title__icontains=search) | Q(content__icontains=search)
+            )
 
-        # Filters
         if tag:
             query = query.filter(tags=tag)
         if category:
@@ -143,32 +161,33 @@ class InsightHandler:
         if complexity:
             query = query.filter(complexity=complexity)
 
-        # Sorting
         sort_field = f"-{sort}" if order == "desc" else f"+{sort}"
         query = query.order_by(sort_field)
 
-        # Pagination Calculation
-        total_count = query.count()
-        total_pages = (total_count + size - 1) // size
+        try:
+            total_count = query.count()
+            total_pages = (total_count + size - 1) // size
 
-        # Fetch Data
-        offset = (page - 1) * size
-        insights = query.skip(offset).limit(size)
-        
-        results = []
-        for doc in insights.as_pymongo():
-            doc["id"] = str(doc["_id"])
-            doc["_id"] = str(doc["_id"])
-            del doc["_id"]
-            results.append(doc)
+            offset = (page - 1) * size
+            insights = query.skip(offset).limit(size)
 
-        return {
-            "items": results,
-            "total": total_count,
-            "page": page,
-            "size": size,
-            "pages": total_pages
-        }
+            results = []
+            for doc in insights.as_pymongo():
+                doc["id"] = str(doc["_id"])
+                doc["_id"] = str(doc["_id"])
+                del doc["_id"]
+                results.append(doc)
+
+            return {
+                "items": results,
+                "total": total_count,
+                "page": page,
+                "size": size,
+                "pages": total_pages,
+            }
+        except Exception as e:
+            console_logger.error(f"Error fetching insights: {e}")
+            raise HTTPException(status_code=500, detail="Internal Server Error during fetching")
 
 
 insight_handler = InsightHandler()
